@@ -1,0 +1,50 @@
+/* ==========================================================
+   css/base.css
+   顏色主題（淺色／深色）、字型。想換配色改 :root 裡的變數。
+   ========================================================== */
+
+html{color-scheme:light}
+[hidden]{display:none!important}
+:root{
+  --bg:#F6F5F1; --surface:#FFFFFF; --surface-2:#EFEDE7; --line:#E2DED5;
+  --ink:#1F2421; --ink-2:#5B625D; --ink-3:#8F948F;
+  --accent:#2F6B57; --accent-soft:#DCEBE4;     /* 主色（綠） */
+  --inc:#2F7A55;  --inc-soft:#DDEFE5;          /* 收入 */
+  --exp:#B8483E;  --exp-soft:#F6E1DD;          /* 支出 */
+  --tr:#8A6A1F;   --tr-soft:#F3EAD3;           /* 還款 */
+  --pa:#3567A6;   --pb:#C0506F;                /* 兩個人的代表色 */
+  --shadow:0 1px 2px rgba(20,30,25,.05),0 4px 14px rgba(20,30,25,.05);
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#121614; --surface:#1B201D; --surface-2:#242A26; --line:#323A35;
+    --ink:#E9EEEA; --ink-2:#B3BCB6; --ink-3:#7F8983;
+    --accent:#6FC3A3; --accent-soft:#1F3A30;
+    --inc:#6CC596; --inc-soft:#1E3429;
+    --exp:#EE8A7E; --exp-soft:#3D2420;
+    --tr:#D9B65E; --tr-soft:#382E18;
+    --pa:#7FA9E0; --pb:#E68AA4;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#121614; --surface:#1B201D; --surface-2:#242A26; --line:#323A35;
+  --ink:#E9EEEA; --ink-2:#B3BCB6; --ink-3:#7F8983;
+  --accent:#6FC3A3; --accent-soft:#1F3A30;
+  --inc:#6CC596; --inc-soft:#1E3429;
+  --exp:#EE8A7E; --exp-soft:#3D2420;
+  --tr:#D9B65E; --tr-soft:#382E18;
+  --pa:#7FA9E0; --pb:#E68AA4;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body.lock{overflow:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+h1,h2,h3{margin:0;line-height:1.3}
