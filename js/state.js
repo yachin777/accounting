@@ -1,17 +1,24 @@
 // ==========================================================
-// js/state.js
+// js/state
 // 畫面狀態與資料（全部都放在 state 裡，改完呼叫 render() 重畫）。
 // ==========================================================
 
 const state={
   view:'records',            // 目前分頁
   month:today().slice(0,7),  // 「明細」「統計」看的月份
+  calDay:'',                 // 「日曆」選到的那一天
   filter:'all',              // 明細篩選：all / expense / income / transfer
   settleAll:false,           // 分帳：false = 只看上次結清後；true = 全部
   entries:[],                // 所有記帳資料
+  accounts:[],               // 所有帳戶（資產、負債）
+  budgets:[],                // 每月預算
+  accFilter:'all',           // 帳戶頁篩選：all / A / B / both
+  member:'A',                // 「成員統計」看的是誰
+  formKind:'entry',          // 表單正在編輯什麼：entry = 記帳、account = 帳戶、budget = 預算
   settings:{...DEFAULT_SETTINGS},
   ready:false,               // 資料是否載入完成
   authError:'',
+  user:'',                   // 登入的 Google 帳號（Email）
   draft:null                 // 表單正在編輯的資料
 };
 

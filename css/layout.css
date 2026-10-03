@@ -1,0 +1,56 @@
+/* ==========================================================
+   css/layout
+   版面與共用元件：頁首、底部分頁列、記一筆按鈕、卡片、按鈕、標籤…
+   ========================================================== */
+
+/* ---------- 版面 ---------- */
+.wrap{max-width:680px;margin:0 auto;padding:0 16px calc(150px + env(safe-area-inset-bottom,0px))}
+.top{display:flex;align-items:center;gap:10px;padding:calc(14px + env(safe-area-inset-top,0px)) 0 10px}
+.top h1{font-size:19px;flex:1}
+.logo{width:34px;height:34px;border-radius:10px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700}
+.logo.big{width:56px;height:56px;font-size:26px;border-radius:16px;margin:0 auto 12px}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:700}
+
+/* 底部分頁列 */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;justify-content:center;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tab{flex:1;max-width:170px;background:none;border:0;padding:8px 0 7px;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--ink-3);font-size:12px}
+.tab svg{width:22px;height:22px}
+.tab.on{color:var(--accent);font-weight:700}
+
+/* 記一筆按鈕 */
+.fab{position:fixed;z-index:21;right:max(16px,calc(50% - 324px));bottom:calc(74px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:6px;padding:13px 20px 13px 16px;border:0;border-radius:999px;background:var(--accent);color:#fff;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.fab svg{width:20px;height:20px}
+
+/* ---------- 共用元件 ---------- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);margin-bottom:14px}
+.card.pad{padding:16px}
+.card h3{font-size:15px;margin-bottom:12px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 16px;font-weight:500}
+.btn.small{padding:6px 12px;font-size:14px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.danger{color:var(--exp);border-color:var(--exp-soft);margin-right:auto}
+.link{background:none;border:0;color:var(--accent);padding:0;font-size:13px}
+.icon-btn{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:20px;line-height:1}
+.chips{display:flex;gap:8px;overflow-x:auto;margin:4px 0 14px;padding-bottom:2px}
+.chips.cwrap{flex-wrap:wrap;overflow:visible;margin:0}
+.chip{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 13px;font-size:14px;color:var(--ink-2)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.empty{text-align:center;color:var(--ink-3);padding:36px 12px}
+.empty.small{padding:12px}
+.hint{color:var(--ink-3);font-size:13px;margin:6px 0 12px}
+.notice{display:flex;align-items:center;gap:10px;justify-content:space-between;background:var(--accent-soft);border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:14px}
+.notice.err{background:var(--exp-soft);color:var(--exp)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.dot.pa-A{background:var(--pa)}.dot.pa-B{background:var(--pb)}
+span.pa-A{color:var(--pa)}span.pa-B{color:var(--pb)}
+
+/* 月份切換 */
+.monthbar{display:flex;align-items:center;gap:10px;margin:6px 0 12px}
+.monthbar b{font-size:17px;min-width:118px;text-align:center}
+
+/* 三格統計 */
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stats3>div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-width:0}
+.stats3 small{display:block;color:var(--ink-3);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stats3 b{font-size:17px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.inc{color:var(--inc)}.exp{color:var(--exp)}

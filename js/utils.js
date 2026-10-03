@@ -1,8 +1,9 @@
 // ==========================================================
-// js/utils.js
+// js/utils
 // 小工具：文字跳脫、金額、日期、提示訊息。
 // ==========================================================
 
+// 找畫面上的元素：$('#view') = document.querySelector('#view')
 const $=s=>document.querySelector(s);
 // 把文字裡的特殊符號轉掉，避免破壞畫面
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -18,6 +19,6 @@ function shiftMonth(m,n){let [y,mo]=m.split('-').map(Number);mo+=n;while(mo<1){m
 function monthLabel(m){const [y,mo]=m.split('-');return `${y} 年 ${+mo} 月`}
 // '2026-10-03' → '10/3（六）'
 function dayLabel(d){const t=new Date(d+'T00:00:00');return `${t.getMonth()+1}/${t.getDate()}（${'日一二三四五六'[t.getDay()]}）`}
-// 顯示提示訊息幾秒
+// 畫面下方的提示訊息（幾秒後自動消失）
 let toastTimer;
 function toast(msg){const t=$('#toast');t.textContent=msg;t.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.hidden=true,2600)}

@@ -1,0 +1,26 @@
+/* ==========================================================
+   css/form
+   表單（記一筆、帳戶、預算共用的彈出視窗）與提示訊息
+   ========================================================== */
+
+/* ---------- 表單 ---------- */
+.scrim{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.4);display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);width:100%;max-width:560px;max-height:92vh;display:flex;flex-direction:column;border-radius:18px 18px 0 0}
+@media (min-width:640px){.scrim{align-items:center}.sheet{border-radius:18px}}
+.sheet-h{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+.sheet-h h2{font-size:17px}
+.x{border:0;background:none;font-size:26px;line-height:1;color:var(--ink-3)}
+.sheet-b{padding:14px 18px;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
+.sheet-f{display:flex;gap:8px;justify-content:flex-end;padding:12px 18px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lbl{font-size:13px;color:var(--ink-2)}
+input.big{font-size:22px;font-weight:700;padding:7px 11px}
+.seg{display:flex;flex-wrap:wrap;background:var(--surface-2);border-radius:11px;padding:3px;gap:3px}
+.seg button{flex:1 1 auto;border:0;background:none;border-radius:9px;padding:7px 10px;font-size:14px;color:var(--ink-2);white-space:nowrap}
+.seg button.on{background:var(--surface);color:var(--ink);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.preview{background:var(--accent-soft);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;font-size:14px}
+.preview b{color:var(--accent);font-size:16px}
+.preview small{color:var(--ink-2)}
+
+/* 提示訊息 */
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(140px + env(safe-area-inset-bottom,0px));z-index:60;background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:10px;font-size:14px;max-width:calc(100% - 32px)}

@@ -1,0 +1,137 @@
+/* ==========================================================
+   css/views
+   各分頁的樣式：明細、日曆、預算、帳戶、成員統計、分帳、統計、設定
+   ========================================================== */
+
+/* ---------- 明細列表 ---------- */
+.day{margin-bottom:4px}
+.day-h{display:flex;justify-content:space-between;align-items:baseline;padding:4px 4px 6px}
+.day-h small{color:var(--ink-3)}
+.list{overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:11px 14px}
+.row:last-child{border-bottom:0}
+.row:hover{background:var(--surface-2)}
+.cat{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:15px}
+.cat.exp{background:var(--exp-soft);color:var(--exp)}
+.cat.inc{background:var(--inc-soft);color:var(--inc)}
+.cat.tr{background:var(--tr-soft);color:var(--tr)}
+.row-main{flex:1;min-width:0;display:flex;flex-direction:column}
+.row-t{display:flex;gap:8px;align-items:baseline;min-width:0}
+.row-t .note{color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-main small{color:var(--ink-3);font-size:12.5px}
+.row-main .owe{color:var(--accent);font-weight:500}
+.row-main .run{color:var(--ink-2)}
+.amt{flex:none;font-weight:700}
+.amt.tr{color:var(--tr)}
+
+/* ---------- 日曆 ---------- */
+.cal{padding:10px 8px 8px}
+.cal-h,.cal-g{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-h span{text-align:center;font-size:12px;color:var(--ink-3);padding-bottom:4px}
+.cal-h span:first-child,.cal-h span:last-child{color:var(--exp)}
+.cday{position:relative;min-height:58px;border:1px solid transparent;border-radius:10px;padding:4px 2px;display:flex;flex-direction:column;align-items:center;gap:1px;overflow:hidden;
+  background:color-mix(in srgb,var(--exp) calc(var(--heat,0)*40%),var(--surface-2))}
+.cday.blank{background:none}
+.cd-n{font-size:13px;font-weight:500;line-height:1.4}
+.cd-e{font-size:11px;color:var(--exp);font-weight:700;line-height:1.2;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.cd-i{font-size:11px;color:var(--inc);font-weight:700;line-height:1.2;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.cd-dot{width:5px;height:5px;border-radius:50%;background:var(--tr);margin-top:3px}
+.cday.today .cd-n{background:var(--accent);color:#fff;border-radius:999px;padding:0 6px}
+.cday.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.btn.wide{width:100%;margin:4px 0 16px;border-style:dashed;color:var(--accent)}
+
+/* ---------- 預算 ---------- */
+.bbar{display:block;height:8px;background:var(--surface-2);border-radius:999px;overflow:hidden;margin:5px 0 3px}
+.bbar-f{display:block;height:100%;background:var(--accent);border-radius:999px}
+.bbar-f.warn{background:var(--tr)}.bbar-f.over{background:var(--exp)}
+.bcard{display:block;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.bcard-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.bcard-h h3{margin:0}
+.bcard .link{font-size:13px}
+.brow{display:grid;grid-template-columns:76px 1fr auto;gap:10px;align-items:center;font-size:14px;padding:3px 0}
+.brow .bbar{margin:0}
+.brow-k{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brow-v{font-size:13px;color:var(--ink-2);text-align:right;min-width:92px}
+.brow-item .amt{font-weight:400;font-size:13px;color:var(--ink-2);text-align:right}
+.brow-item .row-main .bbar{max-width:100%}
+.bhint{display:flex;flex-direction:column;gap:8px}
+.bhint:empty{display:none}
+.bhint>small{color:var(--ink-3)}
+.bh-row{background:var(--surface-2);border-radius:12px;padding:9px 12px;font-size:13px;display:flex;flex-direction:column;gap:1px}
+.bh-row>span:first-child{color:var(--ink-2);font-weight:500}
+.bh-row b{color:var(--accent)}
+.bh-row.warn b{color:var(--tr)}
+.bh-row.over b{color:var(--exp)}
+
+/* ---------- 帳戶 ---------- */
+.acc-hero{padding:18px 16px}
+.acc-hero .hero-big{margin-bottom:10px}
+.acc-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;border-top:1px solid var(--line);padding-top:10px}
+.acc-2 small{display:block}
+.acc-2 b{font-size:18px}
+.acc-sec{margin-top:6px}
+.acc-sec-h{display:flex;justify-content:space-between;align-items:baseline;padding:4px 4px 8px}
+.acc-sec-h h3{font-size:16px}
+.cat.acc{background:var(--accent-soft);color:var(--accent)}
+
+/* ---------- 成員統計 ---------- */
+.subhead{display:flex;align-items:center;gap:8px;margin:4px 0 2px}
+.subhead h2{font-size:17px;flex:1}
+.subhead .dot{margin:0}
+.tr-link{cursor:pointer}
+.tr-link:hover{background:var(--surface-2)}
+.tbl td.go{color:var(--ink-3);font-size:18px;width:18px;padding-left:0}
+.list-title{font-size:15px;margin:6px 4px 8px}
+
+/* ---------- 分帳 ---------- */
+.hero{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);text-align:center;padding:20px 16px;margin:6px 0 12px}
+.hero small{color:var(--ink-3)}
+.hero-who{font-size:18px;font-weight:700;margin-top:2px}
+.hero-big{font-size:40px;font-weight:700;letter-spacing:.5px;margin:2px 0 12px}
+.hero.even .hero-big{color:var(--inc);margin-bottom:0}
+.hero.even p{margin:0;color:var(--ink-3)}
+
+/* ---------- 統計 ---------- */
+.hbars{display:flex;flex-direction:column;gap:9px}
+.hbar{display:grid;grid-template-columns:72px 1fr auto;gap:10px;align-items:center;font-size:14px}
+.hb-k{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hb-track{height:10px;background:var(--surface-2);border-radius:999px;overflow:hidden}
+.hb-fill{display:block;height:100%;border-radius:999px}
+.hb-fill.exp{background:var(--exp)}.hb-fill.inc{background:var(--inc)}
+.hb-v{text-align:right;min-width:92px}
+.hb-v small{color:var(--ink-3);margin-left:6px;font-size:12px}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th,.tbl td{padding:8px 4px;border-bottom:1px solid var(--line);text-align:right}
+.tbl th:first-child{text-align:left}
+.tbl thead th{color:var(--ink-3);font-weight:500;font-size:13px}
+.trend{display:flex;gap:8px;align-items:flex-end;height:150px}
+.tcol{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;gap:4px}
+.tcol small{color:var(--ink-3);font-size:12px}
+.tcol.cur small{color:var(--ink);font-weight:700}
+.tbars{flex:1;width:100%;display:flex;gap:3px;align-items:flex-end;justify-content:center}
+.tb{width:38%;max-width:18px;border-radius:4px 4px 0 0;min-height:1px}
+.tb.inc{background:var(--inc)}.tb.exp{background:var(--exp)}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--ink-3);margin-top:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.legend i.inc{background:var(--inc)}.legend i.exp{background:var(--exp)}
+
+/* ---------- 設定 ---------- */
+.pfield{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.pfield .dot{margin:0}
+.pf-l{font-weight:700;color:var(--ink-2);width:14px}
+.field{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--ink-2);min-width:0}
+.acct-btns{display:flex;gap:8px;flex-wrap:wrap}
+img.avatar{object-fit:cover}
+.field.need .lbl::after{content:'（請選擇）';color:var(--exp);margin-left:4px}
+input{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:9px 11px;color:var(--ink);min-width:0}
+input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.tag{display:inline-flex;align-items:center;gap:2px;background:var(--surface-2);border-radius:999px;padding:4px 6px 4px 12px;font-size:14px}
+.tag button{border:0;background:none;color:var(--ink-3);font-size:16px;line-height:1;padding:0 4px}
+.addcat{display:flex;gap:8px}
+.addcat input{flex:1}
+.login{text-align:center;margin-top:40px;padding:32px 20px}
+.login h2{margin-bottom:6px}
+.login p{color:var(--ink-2)}
+.login .btn{width:100%;max-width:280px;margin:12px 0 4px;padding:12px}
+.login .notice{justify-content:center}

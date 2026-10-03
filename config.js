@@ -1,12 +1,12 @@
 // ==========================================================
 // config.js
-// 兩個設定值，設定方式見 README.md。這兩個值公開沒關係：
-// 誰能讀寫資料，是由 Apps Script 的允許名單（ALLOWED_EMAILS）決定。
-// 兩個都留空 = 本機模式（資料只存在這個瀏覽器，用來測試）。
+// Apps Script 的兩個網址（部署方式見 README.md）。這兩個網址公開沒關係：
+// 登入要通過 Google 驗證，讀寫資料要有登入憑證，沒有權限的人什麼都拿不到。
+// 兩個都留空 = 本機測試模式（資料只存在這個瀏覽器）。
 // ==========================================================
 
-// Google 試算表的 API 網址（Apps Script「部署 → 網頁應用程式」的網址）
-window.SHEETS_API_URL = "";
+// ① 登入用部署的網址（執行身分：存取網頁應用程式的使用者）
+window.LOGIN_URL = "";
 
-// Google 登入的用戶端 ID（Google Cloud「憑證 → OAuth 用戶端 ID」，結尾是 .apps.googleusercontent.com）
-window.GOOGLE_CLIENT_ID = "";
+// ② 資料用部署的網址（執行身分：我）
+window.API_URL = "";

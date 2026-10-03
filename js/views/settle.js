@@ -1,8 +1,9 @@
 // ==========================================================
-// js/views/settle.js
+// js/views/settle
 // 「分帳」分頁：目前誰要給誰多少錢、每一筆怎麼算出來的。
 // ==========================================================
 
+/** 畫出「分帳」分頁：目前誰要給誰多少、未結清期間各自墊了多少、每一筆的累計。 */
 function viewSettle(){
   const {balance,rows,lastZero}=settlement(state.entries);
   const open=rows.slice(lastZero+1);            // 上次兩清之後的紀錄

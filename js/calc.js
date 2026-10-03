@@ -1,5 +1,5 @@
 // ==========================================================
-// js/calc.js
+// js/calc
 // 分帳計算（最重要的邏輯都在這裡）。
 //
 // 每筆支出都記錄：誰付的（payer）、兩人各自的份額（shareA、shareB）。
@@ -14,7 +14,13 @@
 //     合計 -50 → A 要給 B 50
 // ==========================================================
 
-// 依分攤方式算出兩人的份額
+/**
+ * 依分攤方式算出兩人的份額。
+ * @param {number} amount  總金額
+ * @param {string} payer   誰付的 'A'/'B'
+ * @param {string} split   equal 平分／custom 自訂／mine 自己的／other 幫對方付
+ * @param {number} customA 自訂時 A 的部分
+ */
 function computeShares(amount,payer,split,customA){
   amount=r2(amount);
   if(split==='mine')  return payer==='A'?{shareA:amount,shareB:0}:{shareA:0,shareB:amount};
@@ -25,7 +31,7 @@ function computeShares(amount,payer,split,customA){
   return payer==='A'?{shareA:rest,shareB:half}:{shareA:half,shareB:rest};
 }
 
-// 一筆資料對兩人帳的影響（正數 = B 欠 A 增加）
+/** 一筆資料對兩人帳的影響（正數 = B 欠 A 增加，負數 = A 欠 B 增加）。 */
 function effect(e){
   if(e.type==='expense')  return e.payer==='A'?r2(e.shareB):-r2(e.shareA);
   if(e.type==='transfer') return e.from==='A'?r2(e.amount):-r2(e.amount);   // A 還給 B → A 欠 B 減少
@@ -72,3 +78,36 @@ function summarize(list){
   for(const k of ['income','expense','paidA','paidB','useA','useB'])s[k]=r2(s[k]);
   return s;
 }
+
+// ==========================================================
+// 預算
+// 每筆支出算進哪一份預算：
+//   分攤「自己的」   → 付錢那個人的個人預算
+//   分攤「幫對方付」 → 對方的個人預算
+//   分攤「平分」「自訂」→ 共同預算
+// 分類「全部」= 這個對象的每月總預算（所有分類加起來）
+// ==========================================================
+const BUDGET_ALL='全部';
+/** 這筆支出算進誰的預算：'A'、'B'、'both'（共同）；不是支出回傳 null。 */
+function budgetScope(e){
+  if(e.type!=='expense'||!e.payer)return null;
+  if(e.split==='mine')return e.payer;
+  if(e.split==='other')return other(e.payer);
+  return 'both';
+}
+// 某對象、某分類、某月份已經花了多少（excludeId：編輯中的那筆不算）
+function budgetSpent(scope,cat,month,excludeId){
+  let t=0;
+  for(const e of state.entries){
+    if(e.id===excludeId||!(e.date||'').startsWith(month)||budgetScope(e)!==scope)continue;
+    if(cat===BUDGET_ALL||e.category===cat)t+=e.amount;
+  }
+  return r2(t);
+}
+// 這筆支出相關的預算（分類預算＋總預算）
+function budgetsFor(scope,cat){
+  return state.budgets.filter(b=>b.scope===scope&&(b.category===cat||b.category===BUDGET_ALL))
+    .sort((a,b)=>(a.category===BUDGET_ALL)-(b.category===BUDGET_ALL));
+}
+/** 預算對象的顯示名稱：both → 共同，A/B → 名字。 */
+function scopeName(s){return s==='both'?'共同':nm(s)}

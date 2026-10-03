@@ -1,9 +1,9 @@
 // ==========================================================
-// js/views/records.js
+// js/views/records
 // 「明細」分頁：每月收支總覽＋每天的記帳列表。
 // ==========================================================
 
-// 月份切換列（明細、統計共用）
+/** 月份切換列：‹ 2026 年 10 月 ›（明細、日曆、統計、預算都會用到）。 */
 function monthBar(){
   return `<div class="monthbar">
     <button class="icon-btn" data-month="-1" aria-label="上個月">‹</button>
@@ -13,7 +13,10 @@ function monthBar(){
   </div>`;
 }
 
-// 收入／支出／結餘三格
+/**
+ * 收入／支出／結餘三格。
+ * @param {Object} s summarize() 算出來的結果
+ */
 function sumBoxes(s){
   const net=r2(s.income-s.expense);
   return `<div class="stats3">
@@ -23,13 +26,17 @@ function sumBoxes(s){
   </div>`;
 }
 
-// 名字還沒設定時的提醒
+/** 兩人名字還沒設定時，顯示「先到設定填名字」的提醒。 */
 function nameHint(){
   if(state.settings.nameA&&state.settings.nameB)return '';
   return `<div class="notice">第一次使用？先到「設定」填上兩人的名字。<button class="btn small primary" data-view="settings">去設定</button></div>`;
 }
 
-// 一筆記帳的列（明細、分帳共用）
+/**
+ * 一筆記帳在列表裡的樣子（明細、日曆、分帳、成員統計共用），點了會打開編輯表單。
+ * @param {Object} e     紀錄
+ * @param {string} extra 額外顯示在下面的一行（例如分帳的累計）
+ */
 function entryRow(e,extra=''){
   let icon,title,sub,amt,cls;
   if(e.type==='transfer'){
@@ -51,6 +58,7 @@ function entryRow(e,extra=''){
   </button>`;
 }
 
+/** 畫出「明細」分頁：月份、收支總覽、篩選、依日期分組的紀錄。 */
 function viewRecords(){
   const list=state.entries.filter(e=>(e.date||'').startsWith(state.month));
   const s=summarize(list);
