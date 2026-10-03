@@ -2,73 +2,22 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#2F6B57">
-<!--
-  家庭記帳
-  這個檔案只放頁面骨架；樣式在 css/，功能在 js/。檔案說明請看 README.md。
--->
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>家庭記帳</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/app.css">
+<!--
+  GitHub Pages 的入口：打開 https://yachin777.github.io/accounting/ 會自動轉到 Apps Script 的記帳網頁。
+  把 Apps Script「部署 → 網頁應用程式」的網址貼到下面 APP_URL 的引號裡。
+-->
+<script>
+  const APP_URL = "";
+  if (APP_URL) location.replace(APP_URL);
+</script>
+<style>
+  body{margin:0;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;background:#F6F5F1;color:#1F2421;display:grid;place-items:center;min-height:100vh;padding:16px;box-sizing:border-box;text-align:center}
+  @media (prefers-color-scheme:dark){body{background:#121614;color:#E9EEEA}}
+</style>
 </head>
 <body>
-<div class="wrap">
-  <!-- ===== 頁首 ===== -->
-  <header class="top">
-    <div class="logo" aria-hidden="true">帳</div>
-    <h1>家庭記帳</h1>
-    <div class="who" id="who"></div>
-  </header>
-  <!-- ===== 主要內容（由 js/views/ 產生） ===== -->
-  <main id="view"><div class="empty">載入中…</div></main>
-</div>
-
-<!-- ===== 底部分頁列（按鈕由 js/render.js 產生） ===== -->
-<nav class="tabbar" id="tabbar" aria-label="分頁"></nav>
-
-<!-- ===== 右下角「記一筆」按鈕 ===== -->
-<button class="fab" id="fab" type="button" data-action="new">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span>記一筆</span>
-</button>
-
-<!-- ===== 新增／編輯表單（欄位由 js/form.js 產生） ===== -->
-<div class="scrim" id="scrim" hidden>
-  <form class="sheet" id="form" novalidate>
-    <div class="sheet-h"><h2 id="formTitle">記一筆</h2><button type="button" class="x" data-action="close" aria-label="關閉">×</button></div>
-    <div class="sheet-b" id="formBody"></div>
-    <div class="sheet-f">
-      <button type="button" class="btn danger" id="delBtn" data-action="delete" hidden>刪除</button>
-      <button type="button" class="btn" data-action="close">取消</button>
-      <button type="submit" class="btn primary">儲存</button>
-    </div>
-  </form>
-</div>
-<div class="toast" id="toast" hidden></div>
-
-<!-- ===== Firebase：雲端同步與 Google 登入（設定值在 firebase-config.js） ===== -->
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
-
-<!-- ===== 網頁功能（順序很重要，main.js 必須最後） ===== -->
-<script src="js/constants.js"></script>
-<script src="js/utils.js"></script>
-<script src="js/state.js"></script>
-<script src="js/calc.js"></script>
-<script src="js/store.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/views/records.js"></script>
-<script src="js/views/settle.js"></script>
-<script src="js/views/stats.js"></script>
-<script src="js/views/settings.js"></script>
-<script src="js/render.js"></script>
-<script src="js/form.js"></script>
-<script src="js/events.js"></script>
-<script src="js/main.js"></script>
+  <p>正在前往家庭記帳…<br><small>如果沒有自動跳轉，表示 index.html 裡的 APP_URL 還沒填。</small></p>
 </body>
 </html>

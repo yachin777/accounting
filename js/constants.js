@@ -36,7 +36,6 @@ const INCOME_OWNERS=[{id:'A'},{id:'B'},{id:'both',label:'共同'}];
 // 預設設定（第一次使用時；之後在「設定」分頁修改，存在雲端）
 const DEFAULT_SETTINGS={
   nameA:'', nameB:'',      // 兩人的名字
-  emailA:'', emailB:'',    // 兩人的 Google 帳號（填了之後「誰付的」會自動選登入的人）
   expenseCats:['餐飲','日用品','交通','居家','水電瓦斯','娛樂','購物','醫療','孝親','旅遊','其他'],
   incomeCats:['薪水','獎金','投資','紅包','其他']
 };

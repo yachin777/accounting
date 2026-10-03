@@ -109,10 +109,13 @@ span.pa-A{color:var(--pa)}span.pa-B{color:var(--pb)}
 .legend i.inc{background:var(--inc)}.legend i.exp{background:var(--exp)}
 
 /* ---------- 設定 ---------- */
-.pfield{display:grid;grid-template-columns:auto 1fr 1.4fr;gap:10px;align-items:end;margin-bottom:12px}
-.pfield .dot{margin-bottom:14px}
-.pfield .link{grid-column:2/-1;justify-self:start;margin-top:-6px}
-.pfield label,.field{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--ink-2);min-width:0}
+.pfield{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.pfield .dot{margin:0}
+.pf-l{font-weight:700;color:var(--ink-2);width:14px}
+.field{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--ink-2);min-width:0}
+.acct-btns{display:flex;gap:8px;flex-wrap:wrap}
+img.avatar{object-fit:cover}
+.field.need .lbl::after{content:'（請選擇）';color:var(--exp);margin-left:4px}
 input{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:9px 11px;color:var(--ink);min-width:0}
 input:focus{outline:2px solid var(--accent);outline-offset:-1px}
 .tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
@@ -123,7 +126,8 @@ input:focus{outline:2px solid var(--accent);outline-offset:-1px}
 .login{text-align:center;margin-top:40px;padding:32px 20px}
 .login h2{margin-bottom:6px}
 .login p{color:var(--ink-2)}
-@media (max-width:520px){.pfield{grid-template-columns:auto 1fr}.pfield label:nth-of-type(2){grid-column:2}}
+.gbtn{display:flex;justify-content:center;min-height:44px;align-items:center;margin:16px 0 4px;color:var(--ink-3)}
+.login .notice{justify-content:center}
 
 /* ---------- 表單 ---------- */
 .scrim{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.4);display:flex;align-items:flex-end;justify-content:center}

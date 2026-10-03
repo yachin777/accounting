@@ -45,6 +45,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font
 body.lock{overflow:hidden}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
+a{color:var(--accent)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .num{font-variant-numeric:tabular-nums}
 h1,h2,h3{margin:0;line-height:1.3}

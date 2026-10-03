@@ -1,12 +1,12 @@
 # accounting 家庭記帳
 
-網址（上傳後）：https://yachin777.github.io/accounting/
-
-兩個人用 Google 帳號登入，共用同一本帳；記錄每天收支，並自動算出「誰要給誰多少錢」。
+兩個人用各自的 Google 帳號，共用同一本帳；記錄每天收支，並自動算出「誰要給誰多少錢」。
+資料存在一份 **Google 試算表**，網頁也由這份試算表的 **Apps Script** 提供。
+**不需要 Google Cloud、不需要另外設定登入。**
 
 ## 分帳怎麼算
 
-每筆支出記錄「誰付的」和「怎麼分」：
+每筆支出記錄「誰付的」（每次自己選，沒有預設）和「怎麼分」：
 
 | 怎麼分 | 意思 | 例子 |
 |---|---|---|
@@ -18,72 +18,72 @@
 所有紀錄加總後，「分帳」分頁會顯示目前誰要給誰多少（上例合計：老公要給老婆 50）。
 實際還錢後按「記錄還款」，帳就會歸零。平分除不盡時，零頭算在付錢的人身上。
 
-## 第一次設定
+## 第一次設定（只要做一次）
 
-這個專案跟婚禮籌備**共用同一個 Firebase 專案**（`wedding-plan-dccca`），資料放在 `acc_entries`、`acc_meta` 兩個集合，不會跟婚禮資料混在一起。
+### 1. 建立試算表與 Apps Script
+1. 到 Google 雲端硬碟 → 新增 → **Google 試算表**，名稱例如「家庭記帳」。
+2. 試算表上方選單：**擴充功能 → Apps Script**。
+3. 左邊「檔案」已經有 `程式碼.gs`（或 `Code.gs`）：點開，刪掉原本內容，貼上本資料夾 `apps-script\Code.gs` 的全部內容。
+4. 左邊「檔案」旁的 **＋ → HTML**，檔名輸入 `index`（不用打 .html），刪掉原本內容，貼上 `apps-script\index.html` 的全部內容。
+5. 按儲存（磁碟片圖示）。
+6. 上方函式選單選 `setup` → **執行** → 依照畫面授權：
+   出現「Google 尚未驗證這個應用程式」時，按「進階」→「前往（不安全）」→ 允許（這是你自己的程式）。
+   執行完試算表會多出「記帳」「設定」兩個工作表。
 
-1. GitHub 建立新的 repo：`yachin777/accounting`（Public、不要勾選建立 README）。
-2. 雙擊 `upload.bat` 上傳。
-3. GitHub repo → Settings → Pages → Branch 選 `main`、資料夾 `/ (root)` → Save。
-4. Firebase 主控台 → Firestore Database → 規則，**在原本的規則裡加上**下面兩段（Email 換成你們兩個人的），按「發布」：
+### 2. 部署成網頁
+1. 右上角 **部署 → 新增部署作業** → 左邊齒輪選 **網頁應用程式**：
+   - 執行身分：**存取網頁應用程式的使用者**
+   - 誰可以存取：**任何擁有 Google 帳戶的使用者**
+2. 按部署，複製「網頁應用程式網址」（`https://script.google.com/macros/s/.../exec`）。
+3. 打開這個網址就是記帳網頁了，可以加入手機主畫面。
 
-```
-    match /acc_entries/{id} {
-      allow read, write: if request.auth != null
-        && request.auth.token.email in ['你的@gmail.com', '另一半的@gmail.com'];
-    }
-    match /acc_meta/{id} {
-      allow read, write: if request.auth != null
-        && request.auth.token.email in ['你的@gmail.com', '另一半的@gmail.com'];
-    }
-```
+### 3. 分享給另一半
+試算表右上角 **共用** → 輸入另一半的 Gmail → 權限選 **編輯者** → 傳送。
+另一半打開同一個網址，第一次會要求授權（一樣按「進階」→「前往」→ 允許），之後就能用了。
 
-   這兩段要放在 `match /databases/{database}/documents { ... }` 的大括號裡面。
-   如果原本的規則已經是 `match /{document=**}`（整個資料庫都允許你們兩人），就不用改。
-5. 授權網域 `yachin777.github.io` 婚禮籌備已經加過，不用再加。
-6. 打開網址 → 用 Google 登入 → 到「設定」填兩人的名字和 Google 帳號。
+> **誰能使用**：只有被分享這份試算表（編輯者）的 Google 帳號能讀寫；其他人打開網址會看到「沒有權限」。
+> 想加入或移除，直接改試算表的「共用」設定就好。
 
-> 想改用獨立的 Firebase 專案：建立新專案、開啟 Google 登入與 Firestore，把設定值貼到 `firebase-config.js` 即可。
+### 4.（選用）用 GitHub 網址開啟
+想用 `https://yachin777.github.io/accounting/` 這個比較好記的網址：
+1. 打開本資料夾的 `index.html`，把上面的網頁應用程式網址貼到 `APP_URL = ""` 的引號裡。
+2. GitHub 建立 repo `yachin777/accounting`（Public），雙擊 `upload.bat` 上傳，Settings → Pages → Branch 選 `main`。
+3. 打開 GitHub 網址會自動跳到記帳網頁。
+
+## 之後要修改時
+
+- 改了 `Code.gs` 或 `index.html`：把新內容貼到 Apps Script 對應的檔案 → 儲存 →
+  **部署 → 管理部署作業 → 編輯（鉛筆）→ 版本選「新版本」→ 部署**（網址不會變）。
+  沒有重新部署的話，網頁不會更新。
+- 網頁上方會有一條 Google 的灰色提示「這個應用程式是由 Google Apps Script 使用者建立的」，這是 Google 固定會顯示的，不影響使用。
+
+## 試算表欄位
+
+- 「記帳」工作表：每一列是一筆紀錄。付款人、收入歸屬、還款人用 `A`／`B` 表示，對應「設定」工作表裡的名字。
+  「記錄者」「最後修改者」會自動填登入的 Gmail。
+  直接在試算表修改也可以，網頁按「重新讀取」或 30 秒內會更新。**不要改 id 欄、也不要改第一列標題。**
+- 「設定」工作表：名字、分類（逗號分隔）。
+- 想下載備份：試算表 → 檔案 → 下載（Excel 或 CSV）。
 
 ## 檔案結構
 
 ```
 accounting/
-├─ index.html            頁面骨架
-├─ firebase-config.js    Firebase 設定值（不要刪）
-├─ upload.bat            雙擊：同步＋上傳到 GitHub
-├─ css/
-│  ├─ base.css           顏色主題（淺色／深色）
-│  └─ app.css            版面與元件樣式
-└─ js/
-   ├─ constants.js       分頁、分攤方式、預設分類
-   ├─ utils.js           金額、日期小工具
-   ├─ state.js           畫面狀態、名字
-   ├─ calc.js            分帳計算（核心邏輯）
-   ├─ store.js           資料存取（Firebase／瀏覽器）
-   ├─ auth.js            Google 登入／登出
-   ├─ views/
-   │  ├─ records.js      明細
-   │  ├─ settle.js       分帳
-   │  ├─ stats.js        統計
-   │  └─ settings.js     設定、匯出 CSV
-   ├─ render.js          重畫畫面
-   ├─ form.js            記一筆表單
-   ├─ events.js          按鈕事件
-   └─ main.js            程式進入點（最後載入）
+├─ apps-script/
+│  ├─ Code.gs        試算表端的程式（貼到 Apps Script 的 Code.gs）
+│  └─ index.html     記帳網頁（貼到 Apps Script 的 index）
+├─ index.html        （選用）GitHub 入口，自動跳到 Apps Script 網址
+├─ upload.bat        雙擊：上傳到 GitHub
+└─ README.md
 ```
 
-## 想改什麼，去哪裡改
+## 想改什麼，去哪裡改（都在 apps-script/index.html）
 
-| 想改的東西 | 檔案 |
+| 想改的東西 | 搜尋這個字 |
 |---|---|
-| 配色、兩人的代表色 | `css/base.css` 最上面的變數（`--pa`、`--pb`） |
-| 預設分類 | `js/constants.js` 的 `DEFAULT_SETTINGS`（之後在「設定」分頁改就好） |
-| 分攤方式的名稱 | `js/constants.js` 的 `SPLITS` |
-| 平分的零頭規則 | `js/calc.js` 的 `computeShares()` |
-| 統計顯示幾個月 | `js/constants.js` 的 `TREND_MONTHS` |
-
-## 注意
-
-- 上傳後網站最多要等約 10 分鐘才會更新，可按 `Ctrl + F5` 強制重新整理。
-- 沒網路時也能記帳，恢復連線後會自動同步。
+| 配色、兩人的代表色 | `--accent`、`--pa`、`--pb` |
+| 預設分類 | `DEFAULT_SETTINGS`（之後在「設定」分頁改就好） |
+| 分攤方式的名稱 | `SPLITS` |
+| 平分的零頭規則 | `computeShares` |
+| 統計顯示幾個月 | `TREND_MONTHS` |
+| 自動更新的間隔 | `REFRESH_MS` |

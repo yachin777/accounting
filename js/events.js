@@ -20,15 +20,14 @@ document.addEventListener('click',e=>{
   if(ds.delcat){
     const [k,i]=ds.delcat.split(':');
     if(state.settings[k].length<=1)return toast('至少要保留一個分類');
-    state.settings[k]=state.settings[k].filter((_,j)=>j!==+i);store.saveSettings().catch(()=>toast('儲存失敗'));render();return;
+    store.saveSettings({[k]:state.settings[k].filter((_,j)=>j!==+i)}).catch(e=>toast('儲存失敗：'+(e?.message||e?.code)));return;
   }
-  if(ds.useme){const f=$('#peopleForm');f['email'+ds.useme].value=state.user.email;return}
   switch(ds.action){
     case 'new':openForm(null);break;
     case 'close':closeForm();break;
     case 'delete':deleteEntry();break;
-    case 'login':login();break;
-    case 'logout':logout();break;
+    case 'logout':if(confirm('確定要登出嗎？'))store.logout();break;
+    case 'reload':store.refresh(true).then(()=>toast('已更新'));break;
     case 'export':exportCsv();break;
     case 'settleup':{
       const {balance}=settlement(state.entries);
@@ -63,13 +62,11 @@ document.addEventListener('submit',e=>{
   const f=e.target;
   if(f.id==='peopleForm'){
     e.preventDefault();
-    for(const k of ['nameA','nameB','emailA','emailB'])state.settings[k]=f[k].value.trim();
-    store.saveSettings().then(()=>toast('已儲存')).catch(()=>toast('儲存失敗'));render();
+    store.saveSettings({nameA:f.nameA.value.trim(),nameB:f.nameB.value.trim()}).then(()=>toast('已儲存')).catch(e=>toast('儲存失敗：'+(e?.message||e?.code)));
   }else if(f.dataset.addcat){
     e.preventDefault();
     const k=f.dataset.addcat,v=f.c.value.trim();
     if(!v)return;if(state.settings[k].includes(v))return toast('已經有這個分類');
-    state.settings[k]=[...state.settings[k],v];
-    store.saveSettings().catch(()=>toast('儲存失敗'));render();
+    store.saveSettings({[k]:[...state.settings[k],v]}).catch(e=>toast('儲存失敗：'+(e?.message||e?.code)));
   }
 });

@@ -11,17 +11,16 @@ function catEditor(key,title){
 
 function viewSettings(){
   const st=state.settings;
-  const acct=store.mode==='cloud'
-    ?`<p>已登入：<b>${esc(state.user?.email||'')}</b>${me()?`（${esc(nm(me()))}）`:''}</p><button class="btn small" data-action="logout">登出</button>`
-    :`<p class="hint">目前是「本機模式」，資料只存在這個瀏覽器。在 firebase-config.js 填好設定後，兩人就能登入共用。</p>`;
-  const person=p=>`<div class="pfield"><span class="dot pa-${p}"></span>
-      <label>名字<input name="name${p}" value="${esc(st['name'+p])}" placeholder="${p==='A'?'例如：老公':'例如：老婆'}" maxlength="10"></label>
-      <label>Google 帳號（選填）<input name="email${p}" type="email" value="${esc(st['email'+p])}" placeholder="name@gmail.com"></label>
-      ${state.user?.email?`<button type="button" class="link" data-useme="${p}">填入我的帳號</button>`:''}</div>`;
+  const acct=store.mode==='sheets'
+    ?`<p>已登入：<b>${esc(auth.user?.email||'')}</b></p>
+      <p>資料存在 Google 試算表${store.sheetUrl?`：<a href="${esc(store.sheetUrl)}" target="_blank" rel="noopener">開啟試算表</a>`:''}</p>
+      <div class="acct-btns"><button class="btn small" data-action="reload">重新讀取</button><button class="btn small" data-action="logout">登出</button></div>`
+    :`<p class="hint">目前是「本機模式」，資料只存在這個瀏覽器。在 config.js 填好 Google 試算表的網址後，兩人就能共用（見 README.md）。</p>`;
+  const person=p=>`<label class="pfield"><span class="dot pa-${p}"></span><span class="pf-l">${p}</span>
+      <input name="name${p}" value="${esc(st['name'+p])}" placeholder="${p==='A'?'例如：老公':'例如：老婆'}" maxlength="10"></label>`;
   return `<section class="card pad"><h3>帳號</h3>${acct}</section>
-    <form class="card pad" id="peopleForm"><h3>兩個人</h3>
+    <form class="card pad" id="peopleForm"><h3>兩個人的名字</h3>
       ${person('A')}${person('B')}
-      <p class="hint">填了 Google 帳號後，記帳時「誰付的」會自動選登入的那一位。</p>
       <button class="btn primary">儲存</button></form>
     ${catEditor('expenseCats','支出分類')}
     ${catEditor('incomeCats','收入分類')}

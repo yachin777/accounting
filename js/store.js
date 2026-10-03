@@ -1,74 +1,103 @@
 // ==========================================================
 // js/store.js
 // 資料存取：新增／修改／刪除都經過這裡。
-//   cloud = Firebase 雲端（firebase-config.js 有設定值時；需 Google 登入，兩人即時同步）
-//   local = 只存在這個瀏覽器（沒有設定 Firebase 時，用來測試）
+//   sheets = Google 試算表（config.js 有填 SHEETS_API_URL 時；需用 Google 登入）
+//   local  = 只存在這個瀏覽器（沒有設定網址時，用來測試）
 //
-// Firestore 裡的位置（跟婚禮籌備共用同一個 Firebase 專案，用 acc_ 開頭區分）：
-//   acc_entries/{id}     每一筆記帳
-//   acc_meta/settings    名字、Email、分類
+// 試算表那一端的程式在 apps-script/Code.gs。
+// 另一半新增的資料：每 30 秒、切回這個分頁時，會自動重新讀取。
 // ==========================================================
 
-const COL='acc_entries', SETTINGS_DOC='acc_meta/settings', LOCAL_KEY='acc-local';
+const LOCAL_KEY='acc-local', REFRESH_MS=30000;
 const store={
-  db:null,mode:'local',unsubs:[],
+  mode:'local',url:'',sheetUrl:'',timer:null,busy:0,
   async init(){
-    const cfg=window.FIREBASE_CONFIG;
-    if(cfg&&cfg.apiKey&&window.firebase){
-      this.mode='cloud';
-      try{
-        firebase.initializeApp(cfg);
-        const fs=firebase.firestore();
-        fs.enablePersistence({synchronizeTabs:true}).catch(()=>{});   // 離線也能看、恢復網路後自動上傳
-        const auth=firebase.auth();
-        auth.getRedirectResult().catch(e=>{state.authError=authMsg(e);render()});
-        auth.onAuthStateChanged(u=>{
-          this.detach();state.entries=[];state.settings={...DEFAULT_SETTINGS};
-          state.user=u?{email:u.email||'',name:u.displayName||''}:null;state.authError='';
-          if(u){state.ready=false;this.attach(fs)}else state.ready=true;
-          render();
-        });
-      }catch(e){state.authError='Firebase 設定有誤：'+e.message;state.ready=true;render()}
+    this.url=(window.SHEETS_API_URL||'').trim();
+    if(this.url){
+      this.mode='sheets';
+      if(!window.GOOGLE_CLIENT_ID){state.authError='config.js 還沒填 GOOGLE_CLIENT_ID';state.ready=true;render();return}
+      auth.load();
+      if(auth.user)await this.refresh(true);else{state.ready=true;render()}
+      document.addEventListener('visibilitychange',()=>{if(!document.hidden)this.refresh()});
+      this.timer=setInterval(()=>{if(!document.hidden)this.refresh()},REFRESH_MS);
       return;
     }
     try{const raw=JSON.parse(localStorage.getItem(LOCAL_KEY)||'null');
       if(raw){state.entries=raw.entries||[];state.settings={...DEFAULT_SETTINGS,...raw.settings}}}catch{}
     state.ready=true;render();
   },
-  // 即時監聽：另一半記了一筆，畫面會自動更新
-  attach(db){
-    this.db=db;
-    const fail=e=>{
-      if(e&&e.code==='permission-denied')state.authError=`這個帳號（${state.user?.email||''}）沒有權限。請確認已把這個 Email 加進 Firebase 的安全規則（見 README.md）。`;
-      else toast('與資料庫的連線中斷，請重新整理頁面');
-      state.ready=true;render();
-    };
-    this.unsubs.push(db.collection(COL).onSnapshot(snap=>{
-      state.entries=snap.docs.map(d=>({id:d.id,...d.data()}));state.ready=true;render();
-    },fail));
-    this.unsubs.push(db.doc(SETTINGS_DOC).onSnapshot(s=>{
-      if(s.exists){state.settings={...DEFAULT_SETTINGS,...s.data()};render()}
-    },()=>{}));
+  // 呼叫試算表的 API
+  async call(action,data={}){
+    let idToken;
+    try{idToken=await auth.ensure()}catch(e){this.logout(e.message);throw e}
+    let j;
+    try{
+      const r=await fetch(this.url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,idToken,...data})});
+      j=await r.json();
+    }catch{throw {code:'network',message:'無法連上 Google 試算表，請檢查網路'}}
+    if(!j.ok){if(j.code==='bad_token'||j.code==='not_allowed'||j.code==='need_login')this.logout(j.message);throw j}
+    return j;
   },
-  detach(){this.unsubs.forEach(f=>{try{f()}catch{}});this.unsubs=[];this.db=null},
-  canWrite(){return this.mode==='local'||!!this.db},
-  newId(){return this.db?this.db.collection(COL).doc().id:'e'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)},
+  // 重新讀取全部資料（first = 第一次載入，失敗時要顯示錯誤）
+  async refresh(first){
+    if(this.mode!=='sheets'||!auth.user||this.busy)return;
+    try{
+      const j=await this.call('list');
+      if(this.busy)return;   // 讀取途中有人在存檔，等下次再更新，避免畫面跳回舊資料
+      state.entries=j.entries||[];
+      state.settings={...DEFAULT_SETTINGS,...j.settings};
+      this.sheetUrl=j.sheetUrl||'';state.authError='';
+    }catch(e){
+      if(first)state.authError=e.message||'讀取失敗';
+      else if(this.isLocked()){render();return}
+      else return;   // 背景更新失敗就算了，下次再試
+    }
+    state.ready=true;render();
+  },
+  // Google 登入成功（auth.js 呼叫）
+  onLogin(){
+    if(this.mode!=='sheets')return;
+    state.ready=false;state.authError='';render();
+    this.refresh(true).then(()=>{
+      let item=null;try{item=JSON.parse(localStorage.getItem('acc-pending')||'null');localStorage.removeItem('acc-pending')}catch{}
+      if(item&&!this.isLocked())this.save(item).then(()=>toast('已補存登入過期時的那筆紀錄')).catch(()=>{});
+    });
+  },
+  // 登出（msg = 要顯示在登入畫面的原因）
+  logout(msg=''){
+    auth.logout();
+    state.entries=[];state.settings={...DEFAULT_SETTINGS};state.authError=msg;state.ready=true;
+    if(typeof closeForm==='function')closeForm();render();
+  },
+  isLocked(){return this.mode==='sheets'&&!auth.user},
+  canWrite(){return !this.isLocked()},
+  newId(){return 'e'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)},
   persistLocal(){try{localStorage.setItem(LOCAL_KEY,JSON.stringify({entries:state.entries,settings:state.settings}))}catch{toast('這個瀏覽器無法儲存資料')}},
-  // 新增或修改一筆
+  // 先改畫面，再送到試算表；失敗就還原
+  async sync(apply,action,data){
+    const backup={entries:state.entries.slice(),settings:{...state.settings}};
+    apply();render();
+    if(this.mode==='local'){this.persistLocal();return}
+    this.busy++;
+    try{await this.call(action,data)}
+    catch(e){
+      state.entries=backup.entries;state.settings=backup.settings;
+      // 登入過期導致沒存到：先記在這台裝置，重新登入後自動補存
+      if(action==='save'&&this.isLocked()){try{localStorage.setItem('acc-pending',JSON.stringify(data.item))}catch{};e={...e,message:'登入已過期，重新登入後會自動補存這筆'}}
+      render();throw e;
+    }
+    finally{this.busy--}
+  },
   async save(item){
-    const {id,...body}=item;
-    if(this.db){await this.db.collection(COL).doc(id).set(body);return}
-    if(this.mode!=='local')throw {code:'permission-denied'};
-    const i=state.entries.findIndex(e=>e.id===id);
-    if(i>=0)state.entries[i]=item;else state.entries.push(item);
-    this.persistLocal();render();
+    return this.sync(()=>{
+      const i=state.entries.findIndex(e=>e.id===item.id);
+      if(i>=0)state.entries[i]=item;else state.entries.push(item);
+    },'save',{item});
   },
   async remove(id){
-    if(this.db){await this.db.collection(COL).doc(id).delete();return}
-    state.entries=state.entries.filter(e=>e.id!==id);this.persistLocal();render();
+    return this.sync(()=>{state.entries=state.entries.filter(e=>e.id!==id)},'remove',{id});
   },
-  async saveSettings(){
-    if(this.db){await this.db.doc(SETTINGS_DOC).set({...state.settings});return}
-    this.persistLocal();render();
+  async saveSettings(next){
+    return this.sync(()=>{state.settings={...state.settings,...next}},'saveSettings',{settings:{...state.settings,...next}});
   }
 };
